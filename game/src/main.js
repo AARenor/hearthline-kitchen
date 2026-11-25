@@ -3,7 +3,7 @@ import { VIEW } from './config.js';
 import { createGameState, updateState } from './state.js';
 import { installInput } from './input.js';
 import { drawKitchen } from './render/kitchen.js';
-import { drawEffects, emitCookingEffects } from './render/effects.js';
+import { drawEffects, drawComboBurst, emitCookingEffects } from './render/effects.js';
 import { drawHud } from './render/hud.js';
 import { applyShot } from './shots.js';
 
@@ -32,6 +32,7 @@ function draw() {
   ctx.clearRect(0, 0, VIEW.width, VIEW.height);
   drawKitchen(ctx, state);
   drawEffects(ctx, state);
+  drawComboBurst(ctx, state);
   drawHud(ctx, state);
 }
 
