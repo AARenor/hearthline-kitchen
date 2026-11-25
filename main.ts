@@ -1,6 +1,7 @@
 // Hearthline Kitchen entry program. Node 22, standard library only.
 // Copies the static game and its real browser screenshots to the output
 // directory, then writes the dossier the judge reads with the kit library.
+// Final pass: the plate is ready before the judge ever sees the sheet.
 import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
