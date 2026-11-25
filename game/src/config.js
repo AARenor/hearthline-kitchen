@@ -20,16 +20,19 @@ export const PALETTE = {
 };
 
 export const INGREDIENTS = [
-  { id: 'tomato', name: 'Tomato', color: '#d54636', leaf: '#4d8a36' },
-  { id: 'mushroom', name: 'Mushroom', color: '#a8795b', leaf: '#e0c9ac' },
-  { id: 'noodle', name: 'Noodle', color: '#e9bd65', leaf: '#f6dfad' },
-  { id: 'herb', name: 'Herb', color: '#5b9c45', leaf: '#8ccb62' },
-  { id: 'fish', name: 'Fish', color: '#8fb6c4', leaf: '#d9edf2' },
-  { id: 'pepper', name: 'Pepper', color: '#c4433b', leaf: '#4d8a36' },
-  { id: 'rice', name: 'Rice', color: '#f0e6cf', leaf: '#d8cbb0' },
-  { id: 'lemon', name: 'Lemon', color: '#e8c846', leaf: '#7cae42' },
+  { id: 'tomato', name: 'Tomato', color: '#d54636', leaf: '#4d8a36', cook: false },
+  { id: 'mushroom', name: 'Mushroom', color: '#a8795b', leaf: '#e0c9ac', cook: true },
+  { id: 'noodle', name: 'Noodle', color: '#e9bd65', leaf: '#f6dfad', cook: true },
+  { id: 'herb', name: 'Herb', color: '#5b9c45', leaf: '#8ccb62', cook: false },
+  { id: 'fish', name: 'Fish', color: '#8fb6c4', leaf: '#d9edf2', cook: true },
+  { id: 'pepper', name: 'Pepper', color: '#c4433b', leaf: '#4d8a36', cook: false },
+  { id: 'rice', name: 'Rice', color: '#f0e6cf', leaf: '#d8cbb0', cook: true },
+  { id: 'lemon', name: 'Lemon', color: '#e8c846', leaf: '#7cae42', cook: false },
 ];
 
+export function needsFire(id) {
+  return Boolean(ingredientById(id).cook);
+}
 export const SHIFT_SECONDS = 240;
 export const TICKET_SECONDS = 68;
 

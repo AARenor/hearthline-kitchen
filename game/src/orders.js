@@ -15,7 +15,7 @@ export function recipeById(id) {
 
 export function makeOrder(seed, elapsed = 0) {
   const recipe = RECIPES[seed % RECIPES.length];
-  const pressure = Math.min(0.34, elapsed / 900);
+  const pressure = Math.min(0.45, elapsed / 240);
   const seconds = Math.round(TICKET_SECONDS * (1 - pressure));
   return {
     id: seed,

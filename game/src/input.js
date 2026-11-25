@@ -1,17 +1,35 @@
-// Keyboard and mouse controls for the single chef.
+// Keyboard and mouse controls. Every action waits for the chef to walk there.
 import { CRATE_X, CRATE_Y, STATIONS } from './config.js';
-import { moveChefToward, stationAt, useStation, pickIngredient } from './state.js';
+import { moveChefToward, queueAction, stationAt } from './state.js';
 import { playSound } from './audio.js';
 
 export function installInput(canvas, state, onAction) {
   const held = new Set();
 
-  function act(stationId) {
-    const before = state.score + state.bench.parts.length * 1000 + state.prep.chops;
-    useStation(state, stationId);
-    const after = state.score + state.bench.parts.length * 1000 + state.prep.chops;
-    playSound(stationId === 'prep' ? 'chop' : stationId === 'stove' ? 'sizzle' : stationId === 'pass' ? 'serve' : 'plate');
-    onAction?.(stationId, after > before);
+  function queueStation(stationId, x, y) {
+    const snapshot = () => JSON.stringify({
+      score: state.score,
+      prep: state.prep,
+      stove: state.stove,
+      bench: state.bench,
+      pass: state.pass,
+      carrying: state.chef.carrying,
+    });
+    const before = snapshot();
+    queueAction(state, { type: 'station', stationId }, x, y, () => {
+      const changed = snapshot() !== before;
+      playSound(changed
+        ? stationId === 'prep' ? 'chop' : stationId === 'stove' ? 'sizzle' : stationId === 'pass' ? 'serve' : 'plate'
+        : 'fail');
+      onAction?.(stationId, changed);
+    });
+  }
+
+  function queueCrate(index) {
+    queueAction(state, { type: 'crate', index }, CRATE_X[index], CRATE_Y - 46, () => {
+      playSound('pick');
+      onAction?.('crate', false);
+    });
   }
 
   window.addEventListener('keydown', (event) => {
@@ -19,13 +37,12 @@ export function installInput(canvas, state, onAction) {
     held.add(key);
     if (key === 'e') {
       const nearest = nearestStation(state);
-      if (nearest) act(nearest);
+      if (nearest) {
+        const box = STATIONS[nearest];
+        queueStation(nearest, box.x + box.w / 2, box.y + box.h + 12);
+      }
     }
-    if (key >= '1' && key <= '8') {
-      pickIngredient(state, Number(key) - 1);
-      playSound('pick');
-      onAction?.('crate', false);
-    }
+    if (key >= '1' && key <= '8') queueCrate(Number(key) - 1);
     if (key === 'r' && state.over) window.location.reload();
     if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(key)) event.preventDefault();
   });
@@ -37,18 +54,12 @@ export function installInput(canvas, state, onAction) {
     const y = (event.clientY - rect.top) * (canvas.height / rect.height);
     const crateIndex = CRATE_X.findIndex((cx, index) => Math.abs(x - cx) < 38 && Math.abs(y - CRATE_Y) < 44);
     if (crateIndex >= 0) {
-      pickIngredient(state, crateIndex);
-      playSound('pick');
-      onAction?.('crate', false);
+      queueCrate(crateIndex);
       return;
     }
     const stationId = stationAt(x, y);
-    if (stationId) {
-      moveChefToward(state, x, y - 20);
-      act(stationId);
-    } else {
-      moveChefToward(state, x, y - 22);
-    }
+    if (stationId) queueStation(stationId, x, y - 20);
+    else moveChefToward(state, x, y - 22);
   });
 
   return {
@@ -63,6 +74,7 @@ export function installInput(canvas, state, onAction) {
         const len = Math.hypot(dx, dy);
         state.chef.targetX = Math.max(40, Math.min(940, state.chef.targetX + (dx / len) * dt * 460));
         state.chef.targetY = Math.max(390, Math.min(740, state.chef.targetY + (dy / len) * dt * 460));
+        state.queued = null;
       }
     },
   };

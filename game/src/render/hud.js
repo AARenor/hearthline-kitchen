@@ -1,6 +1,6 @@
 // Order board, timer, score and toast. Kept readable when the sheet is shrunk.
-import { PALETTE, SHIFT_SECONDS, VIEW } from '../config.js';
-import { ticketUrgency } from '../orders.js';
+import { RECIPES, ticketUrgency } from '../orders.js';
+import { needsFire, PALETTE, SHIFT_SECONDS, VIEW } from '../config.js';
 import { drawTicketIcon } from './food.js';
 
 function rounded(ctx, x, y, w, h, r, fill, stroke, lw = 2) {
@@ -64,6 +64,22 @@ export function drawTopBar(ctx, state) {
   ctx.fillText('SERVED / LOST', 1180, 68);
 }
 
+function drawRushMeter(ctx, state) {
+  const stage = Math.min(4, 1 + Math.floor(state.elapsed / 60));
+  rounded(ctx, 972, 14, 126, 60, 8, '#1c1210', '#8b5c36');
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f3c35b';
+  ctx.font = 'bold 12px Georgia, serif';
+  ctx.fillText(`RUSH ${stage}`, 1035, 32);
+  for (let i = 0; i < 4; i += 1) {
+    ctx.fillStyle = i < stage ? (stage >= 3 ? '#ef7252' : '#f3c35b') : '#4b3125';
+    rounded(ctx, 988 + i * 24, 40, 18, 18, 4, ctx.fillStyle, null);
+  }
+  ctx.fillStyle = '#b99a72';
+  ctx.font = '9px Georgia, serif';
+  ctx.fillText('PRESSURE', 1035, 69);
+}
+
 export function drawOrderBoard(ctx, state) {
   rounded(ctx, 968, 104, 290, 486, 12, '#2d1e18f2', '#a56d3d', 3);
   ctx.fillStyle = PALETTE.gold;
@@ -118,17 +134,25 @@ export function drawSidePanel(ctx, state) {
   ctx.fillStyle = PALETTE.gold;
   ctx.font = 'bold 17px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('THE METHOD', 1113, 632);
-  ctx.font = '14px Georgia, serif';
-  ctx.fillStyle = '#e7d3ad';
-  const lines = [
-    '1  Pick from the crates',
-    '2  Chop three times',
-    '3  Fire the pan until READY',
-    '4  Build a plate of three',
-    '5  Serve at THE PASS',
-  ];
-  lines.forEach((line, index) => ctx.fillText(line, 1113, 660 + index * 22));
+  ctx.fillText('HOUSE RECIPES', 1113, 632);
+  RECIPES.slice(0, 3).forEach((recipe, index) => {
+    const y = 654 + index * 35;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = recipe.color;
+    ctx.beginPath();
+    ctx.arc(990, y - 5, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f6e0b8';
+    ctx.font = 'bold 13px Georgia, serif';
+    ctx.fillText(recipe.name.toUpperCase(), 1004, y);
+    ctx.fillStyle = '#cbb18c';
+    ctx.font = '11px Georgia, serif';
+    ctx.fillText(recipe.parts.map((part) => needsFire(part) ? `${part}(fire)` : part).join('  +  '), 1004, y + 15);
+  });
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#9c7855';
+  ctx.font = 'italic 11px Georgia, serif';
+  ctx.fillText('chop  ·  fire  ·  plate  ·  serve', 1113, 770);
 }
 
 export function drawToast(ctx, state) {
@@ -166,6 +190,7 @@ export function drawEndCard(ctx, state) {
 export function drawHud(ctx, state) {
   drawTopBar(ctx, state);
   drawOrderBoard(ctx, state);
+  drawRushMeter(ctx, state);
   drawSidePanel(ctx, state);
   drawToast(ctx, state);
   drawEndCard(ctx, state);

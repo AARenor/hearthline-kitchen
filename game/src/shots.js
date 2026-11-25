@@ -35,8 +35,7 @@ export function applyShot(state, name) {
     state.stove.item = { id: 'fish', prepared: true };
     state.stove.heat = 0.72;
     state.chef.carrying = { id: 'herb', prepared: true };
-    state.bench.parts = ['noodle', 'pepper'];
-    placeChef(state, 'stove');
+    state.bench.parts = [{ id: 'noodle', cooked: true }, { id: 'pepper', cooked: false }];
     setToast(state, 'ON THE FIRE', 3);
     for (let i = 0; i < 14; i += 1) addParticle(state, 435 + i % 4 * 8, 486 - i * 4, '#fff3d8', 'steam');
   } else if (name === 'pass') {
@@ -45,8 +44,7 @@ export function applyShot(state, name) {
     state.served = 12;
     state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id };
     state.pass.bell = 0.6;
-    state.bench.parts = ['mushroom', 'rice'];
-    state.chef.carrying = { id: 'lemon', prepared: false };
+    state.bench.parts = [{ id: 'mushroom', cooked: true }, { id: 'rice', cooked: true }];
     placeChef(state, 'pass');
     setToast(state, 'ORDER UP!', 3);
     for (let i = 0; i < 10; i += 1) addParticle(state, 890 + i % 5 * 6, 470 - i * 5, '#ffd979');
@@ -57,13 +55,16 @@ export function applyShot(state, name) {
     state.served = 9;
     state.prep.item = { id: 'tomato', prepared: true };
     state.stove.item = { id: 'mushroom', prepared: true };
-    state.stove.heat = 0.66;
-    state.bench.parts = ['noodle', 'herb'];
+    state.elapsed = 120;
+    state.shiftLeft = Math.max(0, state.shiftLeft - 120);
+    state.bench.parts = [{ id: 'noodle', cooked: true }, { id: 'herb', cooked: false }];
     state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id };
     state.pass.bell = 0.4;
     state.chef.carrying = { id: 'pepper', prepared: true };
     placeChef(state, 'assembly');
-    setToast(state, 'FULL SERVICE  ·  KITCHEN, ORDERS, TIMER, PLATE', 3);
+    state.chef.targetX = 900;
+    state.chef.targetY = 580;
+    setToast(state, 'RUSH THREE  ·  ORDERS UP', 3);
     for (let i = 0; i < 8; i += 1) addParticle(state, 435 + i % 3 * 10, 485 - i * 7, '#fff3d8', 'steam');
   }
   state.toast.life = 3;

@@ -1,6 +1,7 @@
 // The kitchen itself: tiled room, stations, crates and the chef.
 import { CRATE_X, CRATE_Y, INGREDIENTS, PALETTE, STATIONS, VIEW } from '../config.js';
 import { drawIngredient, drawPlate, drawPreparedDish } from './food.js';
+import { drawRouteArrows, drawChefRoute } from './route.js';
 
 function roundedRect(ctx, x, y, w, h, r, fill, stroke, lineWidth = 2) {
   ctx.beginPath();
@@ -166,7 +167,15 @@ function drawBench(ctx, state) {
   drawPlate(ctx, box.x + box.w / 2, box.y + 74, 1.05);
   state.bench.parts.forEach((part, index) => {
     const a = index * 2.1 + 0.4;
-    drawIngredient(ctx, part, box.x + box.w / 2 + Math.cos(a) * 24, box.y + 68 + Math.sin(a) * 8, 11);
+    const px = box.x + box.w / 2 + Math.cos(a) * 24;
+    const py = box.y + 68 + Math.sin(a) * 8;
+    drawIngredient(ctx, part.id, px, py, 11);
+    if (part.cooked) {
+      ctx.fillStyle = '#e0602f';
+      ctx.beginPath();
+      ctx.arc(px + 9, py - 9, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
   });
   if (state.bench.flash > 0) {
     ctx.strokeStyle = `rgba(255,220,130,${state.bench.flash})`;
@@ -304,9 +313,11 @@ export function drawKitchen(ctx, state) {
   drawFloor(ctx);
   drawDiners(ctx);
   drawPrepStation(ctx, state);
+  drawRouteArrows(ctx);
   drawStove(ctx, state);
   drawBench(ctx, state);
   drawPass(ctx, state);
   drawCrates(ctx);
+  drawChefRoute(ctx, state.chef);
   drawChef(ctx, state.chef);
 }

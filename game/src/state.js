@@ -1,5 +1,5 @@
 // The single mutable game state and the rules that change it.
-import { SHIFT_SECONDS, CRATE_X, CRATE_Y, STATIONS, INGREDIENTS } from './config.js';
+import { SHIFT_SECONDS, CRATE_X, CRATE_Y, STATIONS, INGREDIENTS, needsFire } from './config.js';
 import { makeOrder, orderMatchesDish } from './orders.js';
 
 export function createGameState(seed = 7) {
@@ -13,6 +13,7 @@ export function createGameState(seed = 7) {
     served: 0,
     missed: 0,
     chef: { x: 520, y: 600, targetX: 520, targetY: 600, facing: 1, carrying: null, chopFlash: 0 },
+    queued: null,
     crates: CRATE_X.map((x, index) => ({ x, y: CRATE_Y, id: index })),
     prep: { item: null, chops: 0 },
     stove: { item: null, heat: 0 },
@@ -102,7 +103,7 @@ export function useStove(state) {
     return;
   }
   if (state.stove.item && state.stove.heat < 1) return;
-  state.stove.item = carried;
+  state.stove.item = { ...carried, cooked: false };
   state.stove.heat = 0;
   state.chef.carrying = null;
   setToast(state, 'On the fire', 1);
@@ -119,7 +120,11 @@ export function useBench(state) {
     setToast(state, 'Plate is full', 1.2);
     return;
   }
-  state.bench.parts.push(carried.id);
+  if (needsFire(carried.id) && !carried.cooked) {
+    setToast(state, 'Needs the fire', 1.2);
+    return;
+  }
+  state.bench.parts.push({ id: carried.id, cooked: Boolean(carried.cooked) });
   state.bench.flash = 0.4;
   state.chef.carrying = null;
   setToast(state, 'Added to plate', 1);
@@ -127,8 +132,9 @@ export function useBench(state) {
 
 export function usePass(state) {
   if (state.bench.parts.length && !state.pass.dish) {
-    const match = state.tickets.find((ticket) => orderMatchesDish(ticket, { parts: state.bench.parts }));
-    state.pass.dish = { parts: state.bench.parts.slice(), valid: Boolean(match), ticketId: match?.id ?? null };
+    const plateIds = state.bench.parts.map((part) => part.id);
+    const match = state.tickets.find((ticket) => orderMatchesDish(ticket, { parts: plateIds }));
+    state.pass.dish = { parts: plateIds, valid: Boolean(match), ticketId: match?.id ?? null };
     state.bench.parts = [];
     state.pass.bell = 0.6;
     setToast(state, match ? 'Order up!' : 'No matching ticket', 1.4);
@@ -163,6 +169,10 @@ export function useStation(state, stationId) {
 export function moveChefToward(state, x, y) {
   state.chef.targetX = x;
   state.chef.targetY = y;
+}
+export function queueAction(state, action, x, y, onDone) {
+  state.queued = { ...action, onDone };
+  moveChefToward(state, x, y);
 }
 
 export function stationAt(x, y) {
@@ -202,9 +212,20 @@ export function updateState(state, dt) {
     state.chef.y += (dy / dist) * step;
     state.chef.facing = dx >= 0 ? 1 : -1;
   }
+  if (state.queued) {
+    const pending = state.queued;
+    const wait = Math.hypot(state.chef.targetX - state.chef.x, state.chef.targetY - state.chef.y);
+    if (wait <= 12) {
+      state.queued = null;
+      if (pending.type === 'station') useStation(state, pending.stationId);
+      else if (pending.type === 'crate') pickIngredient(state, pending.index);
+      pending.onDone?.();
+    }
+  }
 
   if (state.stove.item && state.stove.heat < 1) {
     state.stove.heat = Math.min(1, state.stove.heat + dt / 4.5);
+    if (state.stove.item && state.stove.heat >= 1) state.stove.item.cooked = true;
   }
 
   for (const ticket of state.tickets) ticket.remaining -= dt;
