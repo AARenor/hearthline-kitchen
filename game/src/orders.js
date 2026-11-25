@@ -1,0 +1,44 @@
+// Recipes, order tickets and the slow ramp of service pressure.
+import { TICKET_SECONDS, ingredientById } from './config.js';
+
+export const RECIPES = [
+  { id: 'ember', name: 'Ember Noodles', parts: ['noodle', 'pepper', 'herb'], color: '#d9682f' },
+  { id: 'garden', name: 'Garden Skillet', parts: ['tomato', 'mushroom', 'herb'], color: '#8ba449' },
+  { id: 'citrus', name: 'Citrus Fish', parts: ['fish', 'lemon', 'herb'], color: '#d6b544' },
+  { id: 'sunrise', name: 'Sunrise Rice', parts: ['rice', 'tomato', 'pepper'], color: '#de7a42' },
+  { id: 'glade', name: 'Glade Bowl', parts: ['mushroom', 'rice', 'herb'], color: '#789c50' },
+];
+
+export function recipeById(id) {
+  return RECIPES.find((recipe) => recipe.id === id) ?? RECIPES[0];
+}
+
+export function makeOrder(seed, elapsed = 0) {
+  const recipe = RECIPES[seed % RECIPES.length];
+  const pressure = Math.min(0.34, elapsed / 900);
+  const seconds = Math.round(TICKET_SECONDS * (1 - pressure));
+  return {
+    id: seed,
+    recipeId: recipe.id,
+    name: recipe.name,
+    color: recipe.color,
+    parts: recipe.parts.slice(),
+    total: seconds,
+    remaining: seconds,
+  };
+}
+
+export function orderMatchesDish(order, dish) {
+  if (!order || !dish || dish.parts.length !== order.parts.length) return false;
+  const wanted = order.parts.slice().sort().join('|');
+  const given = dish.parts.slice().sort().join('|');
+  return wanted === given;
+}
+
+export function ticketUrgency(order) {
+  return 1 - order.remaining / order.total;
+}
+
+export function ingredientLabel(id) {
+  return ingredientById(id).name;
+}
