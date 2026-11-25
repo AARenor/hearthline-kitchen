@@ -3,7 +3,7 @@ import { TICKET_SECONDS, ingredientById } from './config.js';
 
 export const RECIPES = [
   { id: 'ember', name: 'Ember Noodles', parts: ['noodle', 'pepper', 'herb'], color: '#d9682f' },
-  { id: 'garden', name: 'Garden Skillet', parts: ['tomato', 'mushroom', 'herb'], color: '#8ba449' },
+  { id: 'garden', name: 'Market Salad', parts: ['tomato', 'pepper', 'herb'], color: '#8ba449' },
   { id: 'citrus', name: 'Citrus Fish', parts: ['fish', 'lemon', 'herb'], color: '#d6b544' },
   { id: 'sunrise', name: 'Sunrise Rice', parts: ['rice', 'tomato', 'pepper'], color: '#de7a42' },
   { id: 'glade', name: 'Glade Bowl', parts: ['mushroom', 'rice', 'herb'], color: '#789c50' },

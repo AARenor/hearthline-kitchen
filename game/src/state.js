@@ -7,6 +7,7 @@ export function createGameState(seed = 7) {
     seed,
     rng: seed >>> 0,
     elapsed: 0,
+    rush: 1,
     shiftLeft: SHIFT_SECONDS,
     score: 0,
     combo: 0,
@@ -134,7 +135,7 @@ export function usePass(state) {
   if (state.bench.parts.length && !state.pass.dish) {
     const plateIds = state.bench.parts.map((part) => part.id);
     const match = state.tickets.find((ticket) => orderMatchesDish(ticket, { parts: plateIds }));
-    state.pass.dish = { parts: plateIds, valid: Boolean(match), ticketId: match?.id ?? null };
+    state.pass.dish = { parts: plateIds, valid: Boolean(match), ticketId: match?.id ?? null, color: match?.color ?? '#8a7c6a' };
     state.bench.parts = [];
     state.pass.bell = 0.6;
     setToast(state, match ? 'Order up!' : 'No matching ticket', 1.4);
@@ -198,6 +199,7 @@ export function updateState(state, dt) {
   if (state.over) return;
   state.elapsed += dt;
   state.shiftLeft = Math.max(0, SHIFT_SECONDS - state.elapsed);
+  state.rush = Math.min(4, 1 + Math.floor(state.elapsed / 60));
   state.chef.chopFlash = Math.max(0, state.chef.chopFlash - dt);
   state.bench.flash = Math.max(0, state.bench.flash - dt);
   state.pass.bell = Math.max(0, state.pass.bell - dt);
@@ -207,7 +209,7 @@ export function updateState(state, dt) {
   const dy = state.chef.targetY - state.chef.y;
   const dist = Math.hypot(dx, dy);
   if (dist > 2) {
-    const step = Math.min(dist, dt * 420);
+    const step = Math.min(dist, dt * (420 + (state.rush - 1) * 60));
     state.chef.x += (dx / dist) * step;
     state.chef.y += (dy / dist) * step;
     state.chef.facing = dx >= 0 ? 1 : -1;

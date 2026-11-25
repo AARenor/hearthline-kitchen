@@ -24,21 +24,43 @@ function drawWall(ctx) {
   ctx.fillStyle = '#8a5a33';
   ctx.fillRect(0, 322, VIEW.width, 16);
 
-  ctx.fillStyle = '#1d2a30';
-  roundedRect(ctx, 470, 112, 250, 132, 8, '#21353d', '#a8713e', 8);
-  ctx.fillStyle = '#40606c';
-  ctx.fillRect(482, 124, 226, 108);
-  ctx.fillStyle = '#5e8793';
+  // The brick hearth is the room's signature: a warm arch with a live fire.
   ctx.beginPath();
-  ctx.moveTo(482, 232);
-  ctx.lineTo(560, 124);
-  ctx.lineTo(604, 124);
-  ctx.lineTo(508, 232);
+  ctx.moveTo(470, 244);
+  ctx.lineTo(470, 156);
+  ctx.quadraticCurveTo(470, 104, 595, 104);
+  ctx.quadraticCurveTo(720, 104, 720, 156);
+  ctx.lineTo(720, 244);
+  ctx.closePath();
+  ctx.fillStyle = '#6b3a26';
   ctx.fill();
-  ctx.fillStyle = '#f7d99a';
+  ctx.strokeStyle = '#b7743d';
+  ctx.lineWidth = 9;
+  ctx.stroke();
   ctx.beginPath();
-  ctx.arc(670, 154, 22, 0, Math.PI * 2);
+  ctx.moveTo(490, 238);
+  ctx.lineTo(490, 162);
+  ctx.quadraticCurveTo(490, 126, 595, 126);
+  ctx.quadraticCurveTo(700, 126, 700, 162);
+  ctx.lineTo(700, 238);
+  ctx.closePath();
+  const fire = ctx.createRadialGradient(595, 210, 8, 595, 190, 110);
+  fire.addColorStop(0, '#ffd071');
+  fire.addColorStop(0.45, '#e0662f');
+  fire.addColorStop(1, '#3a1a14');
+  ctx.fillStyle = fire;
   ctx.fill();
+  ctx.fillStyle = '#432318';
+  ctx.fillRect(520, 226, 150, 12);
+  [550, 585, 620].forEach((x, index) => {
+    ctx.fillStyle = ['#ef8b3c', '#ffc767', '#e26830'][index];
+    ctx.beginPath();
+    ctx.moveTo(x - 16, 226);
+    ctx.quadraticCurveTo(x - 10, 190 - index * 6, x, 166 + index * 8);
+    ctx.quadraticCurveTo(x + 12, 194, x + 16, 226);
+    ctx.closePath();
+    ctx.fill();
+  });
 
   ctx.fillStyle = '#3b251b';
   ctx.fillRect(94, 152, 300, 12);
@@ -195,7 +217,7 @@ function drawPass(ctx, state) {
   drawStationBase(ctx, box);
   roundedRect(ctx, box.x + 12, box.y + 30, box.w - 24, box.h - 52, 7, '#c9b493', '#7c5636', 3);
   if (state.pass.dish) {
-    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.valid ? '#d9682f' : '#8a7c6a', 1);
+    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.color ?? '#d9682f', 1);
     if (state.pass.dish.valid) {
       ctx.fillStyle = PALETTE.gold;
       ctx.beginPath();
@@ -272,7 +294,7 @@ function drawChef(ctx, chef) {
 }
 
 // Three regulars wait just beyond the pass, so a served plate has someone to reach.
-function drawDiners(ctx) {
+function drawDiners(ctx, state) {
   const seats = [
     { x: 844, coat: '#7d9c8e', skin: '#d9a87c' },
     { x: 900, coat: '#b2746d', skin: '#edc39b' },
@@ -304,6 +326,28 @@ function drawDiners(ctx) {
     ctx.arc(seat.x - 6, 336, 1.6, 0, Math.PI * 2);
     ctx.arc(seat.x + 6, 336, 1.6, 0, Math.PI * 2);
     ctx.fill();
+    const ticket = state.tickets[index];
+    if (ticket) {
+      roundedRect(ctx, seat.x + 16, 286, 58, 32, 6, '#f2dfb9', '#a56d3d', 2);
+      ctx.fillStyle = ticket.color;
+      ctx.beginPath();
+      ctx.arc(seat.x + 28, 298, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#5a3a26';
+      ctx.font = 'bold 8px Georgia, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(ticket.name.split(' ')[0].toUpperCase(), seat.x + 37, 301);
+      ctx.fillStyle = '#b49161';
+      ctx.fillRect(seat.x + 24, 308, 40, 3);
+      ctx.fillRect(seat.x + 24, 313, 26, 3);
+      ctx.fillStyle = '#f2dfb9';
+      ctx.beginPath();
+      ctx.moveTo(seat.x + 18, 316);
+      ctx.lineTo(seat.x + 10, 324);
+      ctx.lineTo(seat.x + 28, 318);
+      ctx.closePath();
+      ctx.fill();
+    }
     ctx.restore();
   });
 }
@@ -311,7 +355,7 @@ function drawDiners(ctx) {
 export function drawKitchen(ctx, state) {
   drawWall(ctx);
   drawFloor(ctx);
-  drawDiners(ctx);
+  drawDiners(ctx, state);
   drawPrepStation(ctx, state);
   drawRouteArrows(ctx);
   drawStove(ctx, state);

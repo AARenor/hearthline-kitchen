@@ -65,7 +65,7 @@ export function drawTopBar(ctx, state) {
 }
 
 function drawRushMeter(ctx, state) {
-  const stage = Math.min(4, 1 + Math.floor(state.elapsed / 60));
+  const stage = state.rush;
   rounded(ctx, 972, 14, 126, 60, 8, '#1c1210', '#8b5c36');
   ctx.textAlign = 'center';
   ctx.fillStyle = '#f3c35b';
@@ -142,24 +142,25 @@ export function drawSidePanel(ctx, state) {
   ctx.font = 'bold 17px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.fillText('HOUSE RECIPES', 1113, 632);
-  RECIPES.slice(0, 3).forEach((recipe, index) => {
-    const y = 654 + index * 35;
+  RECIPES.forEach((recipe, index) => {
+    const y = 652 + index * 22;
     ctx.textAlign = 'left';
     ctx.fillStyle = recipe.color;
     ctx.beginPath();
-    ctx.arc(990, y - 5, 6, 0, Math.PI * 2);
+    ctx.arc(988, y - 4, 5, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#f6e0b8';
-    ctx.font = 'bold 13px Georgia, serif';
-    ctx.fillText(recipe.name.toUpperCase(), 1004, y);
+    ctx.font = 'bold 11px Georgia, serif';
+    ctx.fillText(recipe.name.toUpperCase(), 1000, y);
     ctx.fillStyle = '#cbb18c';
-    ctx.font = '11px Georgia, serif';
-    ctx.fillText(recipe.parts.map((part) => needsFire(part) ? `${part}(fire)` : part).join('  +  '), 1004, y + 15);
+    ctx.font = '10px Georgia, serif';
+    ctx.fillText(recipe.parts.map((part) => needsFire(part) ? `${part}(fire)` : part).join('+'), 1124, y);
   });
   ctx.textAlign = 'center';
   ctx.fillStyle = '#9c7855';
+  ctx.fillStyle = state.rush >= 3 ? '#f3c35b' : '#9c7855';
   ctx.font = 'italic 11px Georgia, serif';
-  ctx.fillText('chop  ·  fire  ·  plate  ·  serve', 1113, 770);
+  ctx.fillText(state.rush >= 3 ? 'SWIFT SHOES EARNED' : 'chop  ·  fire  ·  plate  ·  serve', 1113, 770);
 }
 
 export function drawToast(ctx, state) {

@@ -72,8 +72,9 @@ export function installInput(canvas, state, onAction) {
       if (held.has('s') || held.has('arrowdown')) dy += 1;
       if (dx || dy) {
         const len = Math.hypot(dx, dy);
-        state.chef.targetX = Math.max(40, Math.min(940, state.chef.targetX + (dx / len) * dt * 460));
-        state.chef.targetY = Math.max(390, Math.min(740, state.chef.targetY + (dy / len) * dt * 460));
+        const speed = dt * (460 + (state.rush - 1) * 60);
+        state.chef.targetX = Math.max(40, Math.min(940, state.chef.targetX + (dx / len) * speed));
+        state.chef.targetY = Math.max(390, Math.min(740, state.chef.targetY + (dy / len) * speed));
         state.queued = null;
       }
     },
