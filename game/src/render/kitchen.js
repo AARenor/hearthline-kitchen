@@ -48,6 +48,34 @@ function drawWall(ctx) {
   for (let i = 0; i < 4; i += 1) {
     roundedRect(ctx, 802 + i * 50, 124, 30, 28, 5, ['#b8c7a0', '#d9b07a', '#a9bec8', '#d5a15a'][i], '#2b1a14');
   }
+  // Warm pendant lamps give the room a height and a service-hour glow.
+  [190, 450, 710].forEach((x) => {
+    ctx.strokeStyle = '#2b1a14';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 74);
+    ctx.stroke();
+    ctx.fillStyle = '#d99b4e';
+    ctx.beginPath();
+    ctx.moveTo(x - 26, 104);
+    ctx.lineTo(x + 26, 104);
+    ctx.lineTo(x + 14, 74);
+    ctx.lineTo(x - 14, 74);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fff0bd';
+    ctx.beginPath();
+    ctx.arc(x, 104, 7, 0, Math.PI * 2);
+    ctx.fill();
+    const glow = ctx.createRadialGradient(x, 110, 4, x, 110, 92);
+    glow.addColorStop(0, 'rgba(255,206,126,0.24)');
+    glow.addColorStop(1, 'rgba(255,206,126,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, 110, 92, 0, Math.PI * 2);
+    ctx.fill();
+  });
 }
 
 function drawFloor(ctx) {
@@ -234,9 +262,47 @@ function drawChef(ctx, chef) {
   ctx.restore();
 }
 
+// Three regulars wait just beyond the pass, so a served plate has someone to reach.
+function drawDiners(ctx) {
+  const seats = [
+    { x: 844, coat: '#7d9c8e', skin: '#d9a87c' },
+    { x: 900, coat: '#b2746d', skin: '#edc39b' },
+    { x: 952, coat: '#6f7fa0', skin: '#b98562' },
+  ];
+  seats.forEach((seat, index) => {
+    ctx.save();
+    ctx.fillStyle = '#00000033';
+    ctx.beginPath();
+    ctx.ellipse(seat.x, 398, 22, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = seat.coat;
+    ctx.beginPath();
+    ctx.moveTo(seat.x - 24, 396);
+    ctx.quadraticCurveTo(seat.x - 20, 348, seat.x, 344);
+    ctx.quadraticCurveTo(seat.x + 20, 348, seat.x + 24, 396);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = seat.skin;
+    ctx.beginPath();
+    ctx.arc(seat.x, 334, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = ['#3a2a26', '#4b3427', '#2f2622'][index];
+    ctx.beginPath();
+    ctx.arc(seat.x, 326, 16, Math.PI, 0);
+    ctx.fill();
+    ctx.fillStyle = '#2b1a14';
+    ctx.beginPath();
+    ctx.arc(seat.x - 6, 336, 1.6, 0, Math.PI * 2);
+    ctx.arc(seat.x + 6, 336, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
 export function drawKitchen(ctx, state) {
   drawWall(ctx);
   drawFloor(ctx);
+  drawDiners(ctx);
   drawPrepStation(ctx, state);
   drawStove(ctx, state);
   drawBench(ctx, state);
