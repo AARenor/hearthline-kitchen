@@ -13,9 +13,9 @@ function placeChef(state, stationId) {
 
 export function applyShot(state, name) {
   state.over = false;
-  state.tickets[0].remaining = state.tickets[0].total * 0.62;
-  state.tickets[1].remaining = state.tickets[1].total * 0.38;
-  state.tickets[2].remaining = state.tickets[2].total * 0.81;
+  state.tickets[0].remaining = state.tickets[0].total * 0.18;
+  state.tickets[1].remaining = state.tickets[1].total * 0.55;
+  state.tickets[2].remaining = state.tickets[2].total * 0.9;
 
   if (name === 'prep') {
     state.score = 420;

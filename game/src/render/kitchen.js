@@ -186,7 +186,7 @@ function drawPass(ctx, state) {
   drawStationBase(ctx, box);
   roundedRect(ctx, box.x + 12, box.y + 30, box.w - 24, box.h - 52, 7, '#c9b493', '#7c5636', 3);
   if (state.pass.dish) {
-    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.valid ? '#d9682f' : '#8a7c6a', 0.86);
+    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.valid ? '#d9682f' : '#8a7c6a', 1);
     if (state.pass.dish.valid) {
       ctx.fillStyle = PALETTE.gold;
       ctx.beginPath();
