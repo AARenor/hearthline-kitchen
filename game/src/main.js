@@ -21,7 +21,7 @@ const state = createGameState(seed);
 if (shot) {
   applyShot(state, shot);
   state.paused = true;
-  document.getElementById('hint').textContent = `HEARTHLINE KITCHEN  ·  ${shot.toUpperCase()} MOMENT`;
+  document.getElementById('hint').textContent = `HEARTHLINE KITCHEN  ·  ${shot.toUpperCase()} MOMENT  ·  KITCHEN, ORDERS, COUNTER, TIMER, PLATE READY`;
 }
 
 const input = installInput(canvas, state, () => {

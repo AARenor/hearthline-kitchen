@@ -136,7 +136,7 @@ export function drawToast(ctx, state) {
   const alpha = Math.min(1, state.toast.life * 2);
   ctx.save();
   ctx.globalAlpha = alpha;
-  rounded(ctx, 380, 96, 520, 50, 10, '#22140fee', '#d7a55f', 2);
+  rounded(ctx, 340, 96, 600, 50, 10, '#22140fee', '#d7a55f', 2);
   ctx.fillStyle = '#ffe1a6';
   ctx.font = 'bold 22px Georgia, serif';
   ctx.textAlign = 'center';

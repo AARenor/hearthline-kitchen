@@ -63,7 +63,7 @@ export function applyShot(state, name) {
     state.pass.bell = 0.4;
     state.chef.carrying = { id: 'pepper', prepared: true };
     placeChef(state, 'assembly');
-    setToast(state, 'SERVICE IN FULL SWING', 3);
+    setToast(state, 'FULL SERVICE  ·  KITCHEN, ORDERS, TIMER, PLATE', 3);
     for (let i = 0; i < 8; i += 1) addParticle(state, 435 + i % 3 * 10, 485 - i * 7, '#fff3d8', 'steam');
   }
   state.toast.life = 3;
