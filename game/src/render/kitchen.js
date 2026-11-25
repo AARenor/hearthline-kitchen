@@ -197,12 +197,12 @@ function drawBench(ctx, state) {
   const box = STATIONS.assembly;
   drawStationBase(ctx, box);
   roundedRect(ctx, box.x + 16, box.y + 30, box.w - 32, box.h - 52, 7, '#d9c5a3', '#8e6a45', 3);
-  drawPlate(ctx, box.x + box.w / 2, box.y + 74, 1.05);
+  drawPlate(ctx, box.x + box.w / 2, box.y + 74, 1.18);
   state.bench.parts.forEach((part, index) => {
     const a = index * 2.1 + 0.4;
-    const px = box.x + box.w / 2 + Math.cos(a) * 24;
-    const py = box.y + 68 + Math.sin(a) * 8;
-    drawIngredient(ctx, part.id, px, py, 11);
+    const px = box.x + box.w / 2 + Math.cos(a) * 28;
+    const py = box.y + 68 + Math.sin(a) * 9;
+    drawIngredient(ctx, part.id, px, py, 13);
     if (part.cooked) {
       ctx.fillStyle = '#e0602f';
       ctx.beginPath();
@@ -228,7 +228,7 @@ function drawPass(ctx, state) {
   drawStationBase(ctx, box);
   roundedRect(ctx, box.x + 12, box.y + 30, box.w - 24, box.h - 52, 7, '#c9b493', '#7c5636', 3);
   if (state.pass.dish) {
-    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.color ?? '#d9682f', 1);
+    drawPreparedDish(ctx, state.pass.dish.parts, box.x + box.w / 2, box.y + 72, state.pass.dish.color ?? '#d9682f', 1.12);
     if (state.pass.dish.valid) {
       ctx.fillStyle = PALETTE.gold;
       ctx.beginPath();

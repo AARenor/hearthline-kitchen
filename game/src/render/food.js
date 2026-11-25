@@ -145,9 +145,9 @@ export function drawPreparedDish(ctx, parts, x, y, color = '#d9682f', scale = 1)
   ellipse(ctx, -8, -3, 18, 5, '#ffffff30');
   parts.forEach((part, index) => {
     const a = index * 2.1 + 0.4;
-    drawIngredient(ctx, part, Math.cos(a) * 20, Math.sin(a) * 8, 10, false);
+    drawIngredient(ctx, part, Math.cos(a) * 24, Math.sin(a) * 10, 13, false);
   });
-  leaf(ctx, 26, -8, 8, PALETTE.herb);
+  leaf(ctx, 30, -10, 10, PALETTE.herb);
   ctx.fillStyle = '#f8e5a8';
   [-14, 2, 16].forEach((px, index) => {
     ctx.beginPath();
