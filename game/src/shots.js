@@ -43,7 +43,7 @@ export function applyShot(state, name) {
     state.score = 2140;
     state.combo = 5;
     state.served = 12;
-    state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id, color: state.tickets[0].color };
+    state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id, color: state.tickets[0].color, name: state.tickets[0].name };
     state.pass.bell = 0.6;
     state.bench.parts = [{ id: 'mushroom', cooked: true }, { id: 'rice', cooked: true }];
     placeChef(state, 'pass');
@@ -60,7 +60,7 @@ export function applyShot(state, name) {
     state.shiftLeft = Math.max(0, state.shiftLeft - 120);
     state.rush = 3;
     state.bench.parts = [{ id: 'noodle', cooked: true }, { id: 'herb', cooked: false }];
-    state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id, color: state.tickets[0].color };
+    state.pass.dish = { parts: state.tickets[0].parts.slice(), valid: true, ticketId: state.tickets[0].id, color: state.tickets[0].color, name: state.tickets[0].name };
     state.pass.bell = 0.4;
     state.chef.carrying = { id: 'pepper', prepared: true };
     placeChef(state, 'assembly');

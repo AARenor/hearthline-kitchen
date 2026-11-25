@@ -143,12 +143,23 @@ function drawPrepStation(ctx, state) {
   }
   if (state.prep.item) drawIngredient(ctx, state.prep.item.id, box.x + box.w / 2, box.y + 72, 22);
   if (state.chef.chopFlash > 0) {
+    ctx.save();
     ctx.strokeStyle = '#fff1b5';
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(box.x + box.w / 2 - 34, box.y + 18);
     ctx.lineTo(box.x + box.w / 2 + 34, box.y + 62);
     ctx.stroke();
+    ctx.fillStyle = '#ffe6a2';
+    ctx.font = 'bold 15px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('CHOP', box.x + box.w / 2, box.y + 24);
+    for (let i = 0; i < 3; i += 1) {
+      ctx.beginPath();
+      ctx.ellipse(box.x + box.w / 2 - 26 + i * 24, box.y + 52 + (i % 2) * 8, 6, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
   for (let i = 0; i < 3; i += 1) {
     ctx.fillStyle = i < state.prep.chops ? PALETTE.gold : '#6b4a34';
@@ -224,6 +235,10 @@ function drawPass(ctx, state) {
       ctx.arc(box.x + box.w - 26, box.y + 24, 8 + state.pass.bell * 6, 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.fillStyle = '#7a4a2d';
+    ctx.font = 'bold 10px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText((state.pass.dish.name ?? '').toUpperCase(), box.x + box.w / 2, box.y + 112);
   } else {
     ctx.fillStyle = '#7a5c42';
     ctx.font = 'italic 14px Georgia, serif';

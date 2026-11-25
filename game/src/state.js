@@ -135,7 +135,7 @@ export function usePass(state) {
   if (state.bench.parts.length && !state.pass.dish) {
     const plateIds = state.bench.parts.map((part) => part.id);
     const match = state.tickets.find((ticket) => orderMatchesDish(ticket, { parts: plateIds }));
-    state.pass.dish = { parts: plateIds, valid: Boolean(match), ticketId: match?.id ?? null, color: match?.color ?? '#8a7c6a' };
+    state.pass.dish = { parts: plateIds, valid: Boolean(match), ticketId: match?.id ?? null, color: match?.color ?? '#8a7c6a', name: match?.name ?? 'Wrong plate' };
     state.bench.parts = [];
     state.pass.bell = 0.6;
     setToast(state, match ? 'Order up!' : 'No matching ticket', 1.4);
