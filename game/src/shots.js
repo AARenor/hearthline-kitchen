@@ -15,6 +15,7 @@ export function applyShot(state, name) {
   state.over = false;
   state.tickets[0].remaining = state.tickets[0].total * 0.18;
   state.tickets[1].remaining = state.tickets[1].total * 0.55;
+  if (name !== 'prep' && name !== 'fire' && name !== 'pass') state.tickets[1].priority = true;
   state.tickets[2].remaining = state.tickets[2].total * 0.9;
 
   if (name === 'prep') {

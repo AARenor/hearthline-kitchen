@@ -16,12 +16,14 @@ export function recipeById(id) {
 export function makeOrder(seed, elapsed = 0) {
   const recipe = RECIPES[seed % RECIPES.length];
   const pressure = Math.min(0.45, elapsed / 240);
-  const seconds = Math.round(TICKET_SECONDS * (1 - pressure));
+  const priority = seed % 5 === 0;
+  const seconds = Math.round(TICKET_SECONDS * (1 - pressure) * (priority ? 0.8 : 1));
   return {
     id: seed,
     recipeId: recipe.id,
     name: recipe.name,
     color: recipe.color,
+    priority,
     parts: recipe.parts.slice(),
     total: seconds,
     remaining: seconds,

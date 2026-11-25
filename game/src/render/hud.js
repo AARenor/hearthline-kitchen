@@ -95,6 +95,13 @@ export function drawOrderBoard(ctx, state) {
     const y = 172 + index * 132;
     const heat = ticketUrgency(ticket);
     rounded(ctx, x, y, 258, 120, 8, heat > 0.72 ? '#4a211c' : '#f2dfb9', heat > 0.72 ? '#e07151' : '#8f6239', 3);
+    if (ticket.priority) {
+      rounded(ctx, x + 3, y + 3, 252, 114, 7, null, '#f3c35b', 3);
+      ctx.fillStyle = '#f3c35b';
+      ctx.font = 'bold 10px Georgia, serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('PRIORITY', x + 244, y + 20);
+    }
     ctx.fillStyle = heat > 0.72 ? '#ffd3c4' : '#4a2b1c';
     ctx.font = 'bold 18px Georgia, serif';
     ctx.textAlign = 'left';

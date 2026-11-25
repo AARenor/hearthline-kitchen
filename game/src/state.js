@@ -145,7 +145,7 @@ export function usePass(state) {
   const ticket = state.tickets.find((item) => item.id === dish.ticketId);
   if (dish.valid && ticket) {
     const quick = ticket.remaining / ticket.total;
-    const gain = 100 + Math.round(90 * quick) + state.combo * 25;
+    const gain = (ticket.priority ? 2 : 1) * (100 + Math.round(90 * quick) + state.combo * 25);
     state.score += gain;
     state.combo += 1;
     state.served += 1;
