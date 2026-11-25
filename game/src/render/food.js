@@ -142,11 +142,18 @@ export function drawPreparedDish(ctx, parts, x, y, color = '#d9682f', scale = 1)
   ctx.shadowBlur = 6;
   ellipse(ctx, 0, 0, 40, 13, color);
   ctx.shadowColor = 'transparent';
+  ellipse(ctx, -8, -3, 18, 5, '#ffffff30');
   parts.forEach((part, index) => {
     const a = index * 2.1 + 0.4;
     drawIngredient(ctx, part, Math.cos(a) * 20, Math.sin(a) * 8, 10, false);
   });
   leaf(ctx, 26, -8, 8, PALETTE.herb);
+  ctx.fillStyle = '#f8e5a8';
+  [-14, 2, 16].forEach((px, index) => {
+    ctx.beginPath();
+    ctx.arc(px, index === 1 ? 6 : -5, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+  });
   ctx.restore();
 }
 
